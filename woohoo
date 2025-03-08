@@ -1,0 +1,263 @@
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+local player = Players.LocalPlayer
+
+local GUI = Instance.new("ScreenGui")
+GUI.Name = game:GetService("HttpService"):GenerateGUID(false)
+GUI.Parent = player.PlayerGui
+
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0, 400, 0, 250)
+MainFrame.Position = UDim2.new(0.5, -200, 0.5, -125)
+MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Parent = GUI
+
+local TopBar = Instance.new("Frame")
+TopBar.Size = UDim2.new(1, 0, 0, 30)
+TopBar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+TopBar.BorderSizePixel = 0
+TopBar.Parent = MainFrame
+
+local Title = Instance.new("TextLabel")
+Title.Text = "KanyeIsTheBest"
+Title.Size = UDim2.new(1, 0, 1, 0)
+Title.BackgroundTransparency = 1
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 14
+Title.Parent = TopBar
+
+local TabsFrame = Instance.new("Frame")
+TabsFrame.Size = UDim2.new(1, 0, 0, 30)
+TabsFrame.Position = UDim2.new(0, 0, 0, 30)
+TabsFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+TabsFrame.BorderSizePixel = 0
+TabsFrame.Parent = MainFrame
+
+local GameTab = Instance.new("TextButton")
+GameTab.Size = UDim2.new(1, 0, 1, 0)
+GameTab.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+GameTab.BorderSizePixel = 0
+GameTab.Text = "Game"
+GameTab.TextColor3 = Color3.fromRGB(255, 255, 255)
+GameTab.Font = Enum.Font.GothamBold
+GameTab.TextSize = 14
+GameTab.Parent = TabsFrame
+
+local GameFrame = Instance.new("Frame")
+GameFrame.Size = UDim2.new(1, -20, 1, -70)
+GameFrame.Position = UDim2.new(0, 10, 0, 65)
+GameFrame.BackgroundTransparency = 1
+GameFrame.Visible = true
+GameFrame.Parent = MainFrame
+
+local function createToggle(name, pos)
+    local ToggleFrame = Instance.new("Frame")
+    ToggleFrame.Size = UDim2.new(1, 0, 0, 35)
+    ToggleFrame.Position = pos
+    ToggleFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    ToggleFrame.BorderSizePixel = 0
+    ToggleFrame.Parent = GameFrame
+
+    local ToggleLabel = Instance.new("TextLabel")
+    ToggleLabel.Text = name
+    ToggleLabel.Size = UDim2.new(1, -60, 1, 0)
+    ToggleLabel.Position = UDim2.new(0, 10, 0, 0)
+    ToggleLabel.BackgroundTransparency = 1
+    ToggleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    ToggleLabel.Font = Enum.Font.Gotham
+    ToggleLabel.TextSize = 14
+    ToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    ToggleLabel.Parent = ToggleFrame
+
+    local ToggleButton = Instance.new("TextButton")
+    ToggleButton.Size = UDim2.new(0, 40, 0, 20)
+    ToggleButton.Position = UDim2.new(1, -50, 0.5, -10)
+    ToggleButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    ToggleButton.BorderSizePixel = 0
+    ToggleButton.Text = ""
+    ToggleButton.Parent = ToggleFrame
+
+    local ToggleCircle = Instance.new("Frame")
+    ToggleCircle.Size = UDim2.new(0, 16, 0, 16)
+    ToggleCircle.Position = UDim2.new(0, 2, 0.5, -8)
+    ToggleCircle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    ToggleCircle.BorderSizePixel = 0
+    ToggleCircle.Parent = ToggleButton
+
+    local UICorner = Instance.new("UICorner")
+    UICorner.CornerRadius = UDim.new(1, 0)
+    UICorner.Parent = ToggleCircle
+
+    local UICorner2 = Instance.new("UICorner")
+    UICorner2.CornerRadius = UDim.new(1, 0)
+    UICorner2.Parent = ToggleButton
+
+    return ToggleButton, ToggleCircle
+end
+
+local AutofarmToggle, AutofarmCircle = createToggle("Autofarm Computers", UDim2.new(0, 0, 0, 0))
+local BeastESPToggle, BeastESPCircle = createToggle("Beast ESP", UDim2.new(0, 0, 0, 45))
+
+local isAutofarmEnabled = false
+local isBeastESPEnabled = false
+
+local function getBeast()
+    for _, player in pairs(Players:GetPlayers()) do
+        if player.Character and player.Character:FindFirstChild("Humanoid") and player.Character.Humanoid:FindFirstChild("IsBeast") then
+            return player.Character
+        end
+    end
+    return nil
+end
+
+local function getComputers()
+    local computers = {}
+    for _, computer in pairs(workspace:GetDescendants()) do
+        if computer:IsA("Model") and computer.Name == "ComputerTable" then
+            if computer:WaitForChild("Values"):WaitForChild("Status").Value ~= "Hacked" then
+                table.insert(computers, computer)
+            end
+        end
+    end
+    return computers
+end
+
+local function createBeastESP(beast)
+    local esp = Instance.new("BillboardGui")
+    esp.Name = "BeastESP"
+    esp.Size = UDim2.new(0, 200, 0, 50)
+    esp.StudsOffset = Vector3.new(0, 2, 0)
+    esp.AlwaysOnTop = true
+    esp.Parent = beast
+
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, 0, 1, 0)
+    label.BackgroundTransparency = 1
+    label.TextColor3 = Color3.fromRGB(255, 0, 0)
+    label.TextStrokeTransparency = 0
+    label.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+    label.Text = "BEAST"
+    label.Font = Enum.Font.SourceSansBold
+    label.TextScaled = true
+    label.Parent = esp
+end
+
+local function toggleAnimation(circle, enabled)
+    local goal = {
+        Position = enabled and UDim2.new(1, -18, 0.5, -8) or UDim2.new(0, 2, 0.5, -8),
+        BackgroundColor3 = enabled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 255, 255)
+    }
+    TweenService:Create(circle, TweenInfo.new(0.2), goal):Play()
+end
+
+local function updateBeastESP()
+    for _, player in pairs(Players:GetPlayers()) do
+        if player.Character then
+            local humanoid = player.Character:FindFirstChild("Humanoid")
+            if humanoid and humanoid:FindFirstChild("IsBeast") then
+                if isBeastESPEnabled then
+                    if not player.Character:FindFirstChild("BeastESP") then
+                        createBeastESP(player.Character)
+                    end
+                else
+                    local esp = player.Character:FindFirstChild("BeastESP")
+                    if esp then
+                        esp:Destroy()
+                    end
+                end
+            end
+        end
+    end
+end
+
+local function autofarm()
+    while isAutofarmEnabled do
+        local character = player.Character
+        if character and character:FindFirstChild("HumanoidRootPart") then
+            local beast = getBeast()
+            local computers = getComputers()
+            
+            for _, computer in pairs(computers) do
+                if not isAutofarmEnabled then break end
+                
+                if beast then
+                    local distance = (beast.HumanoidRootPart.Position - computer.PrimaryPart.Position).Magnitude
+                    if distance < 30 then
+                        continue
+                    end
+                end
+                
+                character.HumanoidRootPart.CFrame = computer.PrimaryPart.CFrame
+                task.wait(0.1)
+                game:GetService("ReplicatedStorage").RemoteEvents.OnComputer:FireServer(computer)
+                
+                repeat
+                    task.wait()
+                    if beast then
+                        local distance = (beast.HumanoidRootPart.Position - computer.PrimaryPart.Position).Magnitude
+                        if distance < 30 then
+                            break
+                        end
+                    end
+                until computer.Values.Status.Value == "Hacked" or not isAutofarmEnabled
+            end
+        end
+        task.wait(1)
+    end
+end
+
+AutofarmToggle.MouseButton1Click:Connect(function()
+    isAutofarmEnabled = not isAutofarmEnabled
+    toggleAnimation(AutofarmCircle, isAutofarmEnabled)
+    if isAutofarmEnabled then
+        task.spawn(autofarm)
+    end
+end)
+
+BeastESPToggle.MouseButton1Click:Connect(function()
+    isBeastESPEnabled = not isBeastESPEnabled
+    toggleAnimation(BeastESPCircle, isBeastESPEnabled)
+    updateBeastESP()
+end)
+
+Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function(character)
+        task.wait(1)
+        if isBeastESPEnabled then
+            updateBeastESP()
+        end
+    end)
+end)
+
+local function roundCorners(frame)
+    local UICorner = Instance.new("UICorner")
+    UICorner.CornerRadius = UDim.new(0, 6)
+    UICorner.Parent = frame
+end
+
+roundCorners(MainFrame)
+roundCorners(TopBar)
+roundCorners(TabsFrame)
+roundCorners(GameTab)
+
+for _, frame in pairs(GameFrame:GetDescendants()) do
+    if frame:IsA("Frame") or frame:IsA("TextButton") then
+        roundCorners(frame)
+    end
+end
+
+local function checkForUpdates()
+    while true do
+        if isBeastESPEnabled then
+            updateBeastESP()
+        end
+        task.wait(1)
+    end
+end
+
+task.spawn(checkForUpdates)
