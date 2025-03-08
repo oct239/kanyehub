@@ -1,0 +1,374 @@
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+local player = Players.LocalPlayer
+
+local GUI = Instance.new("ScreenGui")
+GUI.Name = game:GetService("HttpService"):GenerateGUID(false)
+GUI.Parent = player.PlayerGui
+
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0, 400, 0, 250)
+MainFrame.Position = UDim2.new(0.5, -200, 0.5, -125)
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+MainFrame.BorderColor3 = Color3.fromRGB(0, 255, 0)
+MainFrame.BorderSizePixel = 1
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Parent = GUI
+
+local TopBar = Instance.new("Frame")
+TopBar.Size = UDim2.new(1, 0, 0, 25)
+TopBar.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+TopBar.BorderColor3 = Color3.fromRGB(0, 255, 0)
+TopBar.BorderSizePixel = 1
+TopBar.Parent = MainFrame
+
+local Title = Instance.new("TextLabel")
+Title.Text = "> KanyeIsTheBest"
+Title.Size = UDim2.new(1, 0, 1, 0)
+Title.BackgroundTransparency = 1
+Title.TextColor3 = Color3.fromRGB(0, 255, 0)
+Title.Font = Enum.Font.Code
+Title.TextSize = 14
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Position = UDim2.new(0, 10, 0, 0)
+Title.Parent = TopBar
+
+local TabsFrame = Instance.new("Frame")
+TabsFrame.Size = UDim2.new(1, 0, 0, 30)
+TabsFrame.Position = UDim2.new(0, 0, 0, 25)
+TabsFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+TabsFrame.BorderColor3 = Color3.fromRGB(0, 255, 0)
+TabsFrame.BorderSizePixel = 1
+TabsFrame.Parent = MainFrame
+
+local CatchingTab = Instance.new("TextButton")
+CatchingTab.Size = UDim2.new(0.5, 0, 1, 0)
+CatchingTab.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+CatchingTab.BorderColor3 = Color3.fromRGB(0, 255, 0)
+CatchingTab.BorderSizePixel = 1
+CatchingTab.Text = "> Catching.exe"
+CatchingTab.TextColor3 = Color3.fromRGB(0, 255, 0)
+CatchingTab.Font = Enum.Font.Code
+CatchingTab.TextSize = 14
+CatchingTab.Parent = TabsFrame
+
+local DefensiveTab = Instance.new("TextButton")
+DefensiveTab.Size = UDim2.new(0.5, 0, 1, 0)
+DefensiveTab.Position = UDim2.new(0.5, 0, 0, 0)
+DefensiveTab.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+DefensiveTab.BorderColor3 = Color3.fromRGB(0, 255, 0)
+DefensiveTab.BorderSizePixel = 1
+DefensiveTab.Text = "> Defensive.exe"
+DefensiveTab.TextColor3 = Color3.fromRGB(0, 255, 0)
+DefensiveTab.Font = Enum.Font.Code
+DefensiveTab.TextSize = 14
+DefensiveTab.Parent = TabsFrame
+
+local CatchingFrame = Instance.new("Frame")
+CatchingFrame.Size = UDim2.new(1, -20, 1, -95)
+CatchingFrame.Position = UDim2.new(0, 10, 0, 65)
+CatchingFrame.BackgroundTransparency = 1
+CatchingFrame.Visible = true
+CatchingFrame.Parent = MainFrame
+
+local DefensiveFrame = Instance.new("Frame")
+DefensiveFrame.Size = UDim2.new(1, -20, 1, -95)
+DefensiveFrame.Position = UDim2.new(0, 10, 0, 65)
+DefensiveFrame.BackgroundTransparency = 1
+DefensiveFrame.Visible = false
+DefensiveFrame.Parent = MainFrame
+
+local function createToggle(name, pos, parent)
+    local ToggleFrame = Instance.new("Frame")
+    ToggleFrame.Size = UDim2.new(1, 0, 0, 25)
+    ToggleFrame.Position = pos
+    ToggleFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    ToggleFrame.BorderColor3 = Color3.fromRGB(0, 255, 0)
+    ToggleFrame.BorderSizePixel = 1
+    ToggleFrame.Parent = parent
+
+    local ToggleLabel = Instance.new("TextLabel")
+    ToggleLabel.Text = "> " .. name
+    ToggleLabel.Size = UDim2.new(1, -60, 1, 0)
+    ToggleLabel.Position = UDim2.new(0, 10, 0, 0)
+    ToggleLabel.BackgroundTransparency = 1
+    ToggleLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+    ToggleLabel.Font = Enum.Font.Code
+    ToggleLabel.TextSize = 14
+    ToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    ToggleLabel.Parent = ToggleFrame
+
+    local ToggleButton = Instance.new("TextButton")
+    ToggleButton.Size = UDim2.new(0, 40, 0, 15)
+    ToggleButton.Position = UDim2.new(1, -50, 0.5, -7.5)
+    ToggleButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    ToggleButton.BorderColor3 = Color3.fromRGB(0, 255, 0)
+    ToggleButton.BorderSizePixel = 1
+    ToggleButton.Text = ""
+    ToggleButton.Parent = ToggleFrame
+
+    local ToggleCircle = Instance.new("Frame")
+    ToggleCircle.Size = UDim2.new(0, 15, 0, 15)
+    ToggleCircle.Position = UDim2.new(0, 0, 0, 0)
+    ToggleCircle.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    ToggleCircle.BorderSizePixel = 0
+    ToggleCircle.Parent = ToggleButton
+
+    return ToggleButton, ToggleCircle
+end
+
+local function findFootball()
+    for _, v in pairs(workspace:GetChildren()) do
+        if v.Name == "Football" then
+            return v
+        end
+    end
+    return nil
+end
+
+local football = findFootball() or workspace:WaitForChild("Football")
+local hitbox = Instance.new("Part")
+hitbox.Size = Vector3.new(5, 5, 5)
+hitbox.Color = Color3.fromRGB(255, 0, 0)
+hitbox.Transparency = 1
+hitbox.CanCollide = false
+hitbox.Anchored = true
+hitbox.Name = game:GetService("HttpService"):GenerateGUID(false)
+hitbox.Parent = workspace
+
+local MagsToggle, MagsCircle = createToggle("Mags.dll", UDim2.new(0, 0, 0, 0), CatchingFrame)
+local VisualToggle, VisualCircle = createToggle("Visual.dll", UDim2.new(0, 0, 0, 30), CatchingFrame)
+local AutoTackleToggle, AutoTackleCircle = createToggle("AutoTackle.dll", UDim2.new(0, 0, 0, 0), DefensiveFrame)
+
+local SliderFrame = Instance.new("Frame")
+SliderFrame.Size = UDim2.new(1, 0, 0, 25)
+SliderFrame.Position = UDim2.new(0, 0, 0, 60)
+SliderFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+SliderFrame.BorderColor3 = Color3.fromRGB(0, 255, 0)
+SliderFrame.BorderSizePixel = 1
+SliderFrame.Parent = CatchingFrame
+
+local SliderLabel = Instance.new("TextLabel")
+SliderLabel.Text = "> Size: 5"
+SliderLabel.Size = UDim2.new(1, -10, 1, 0)
+SliderLabel.Position = UDim2.new(0, 10, 0, 0)
+SliderLabel.BackgroundTransparency = 1
+SliderLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+SliderLabel.Font = Enum.Font.Code
+SliderLabel.TextSize = 14
+SliderLabel.TextXAlignment = Enum.TextXAlignment.Left
+SliderLabel.Parent = SliderFrame
+
+local SliderButton = Instance.new("TextButton")
+SliderButton.Size = UDim2.new(1, -20, 0, 2)
+SliderButton.Position = UDim2.new(0, 10, 0.8, 0)
+SliderButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+SliderButton.BorderSizePixel = 0
+SliderButton.Text = ""
+SliderButton.AutoButtonColor = false
+SliderButton.Parent = SliderFrame
+
+local ConsoleFrame = Instance.new("Frame")
+ConsoleFrame.Size = UDim2.new(1, 0, 0, 100)
+ConsoleFrame.Position = UDim2.new(0, 0, 0, 90)
+ConsoleFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+ConsoleFrame.BorderColor3 = Color3.fromRGB(0, 255, 0)
+ConsoleFrame.BorderSizePixel = 1
+ConsoleFrame.Parent = CatchingFrame
+
+local ConsoleText = Instance.new("TextLabel")
+ConsoleText.Size = UDim2.new(1, -10, 1, -10)
+ConsoleText.Position = UDim2.new(0, 5, 0, 5)
+ConsoleText.BackgroundTransparency = 1
+ConsoleText.Text = "> System initialized\n> Modules loaded\n> Ready for input..."
+ConsoleText.TextColor3 = Color3.fromRGB(0, 255, 0)
+ConsoleText.Font = Enum.Font.Code
+ConsoleText.TextSize = 14
+ConsoleText.TextXAlignment = Enum.TextXAlignment.Left
+ConsoleText.TextYAlignment = Enum.TextYAlignment.Top
+ConsoleText.Parent = ConsoleFrame
+
+local isMagsEnabled = false
+local isVisualEnabled = false
+local isAutoTackleEnabled = false
+
+local function toggleAnimation(circle, enabled)
+    local goal = {
+        Position = enabled and UDim2.new(1, -15, 0, 0) or UDim2.new(0, 0, 0, 0),
+        BackgroundColor3 = enabled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+    }
+    TweenService:Create(circle, TweenInfo.new(0.2), goal):Play()
+end
+
+local function enableMags()
+    while isMagsEnabled and task.wait() do
+        if football and football.Parent then
+            local character = player.Character
+            if character and character:FindFirstChild("HumanoidRootPart") then
+                local distance = (character.HumanoidRootPart.Position - football.Position).Magnitude
+                if distance <= hitbox.Size.X then
+                    for _, v in pairs(football:GetChildren()) do
+                        if v:IsA("BodyVelocity") then
+                            v:Destroy()
+                        end
+                    end
+                    
+                    local bodyVelocity = Instance.new("BodyVelocity")
+                    bodyVelocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+                    bodyVelocity.Velocity = (character.HumanoidRootPart.Position - football.Position).Unit * 50
+                    bodyVelocity.Parent = football
+                    
+                    task.wait()
+                    bodyVelocity:Destroy()
+                end
+            end
+        end
+    end
+end
+
+local function enableAutoTackle()
+    while isAutoTackleEnabled do
+        local character = player.Character
+        if character and character:FindFirstChild("HumanoidRootPart") then
+            for _, otherPlayer in pairs(Players:GetPlayers()) do
+                if otherPlayer ~= player and otherPlayer.Character and otherPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    local distance = (character.HumanoidRootPart.Position - otherPlayer.Character.HumanoidRootPart.Position).Magnitude
+                    if distance <= 10 then
+                        game:GetService("ReplicatedStorage").Tackle:FireServer()
+                    end
+                end
+            end
+        end
+        task.wait(0.1)
+    end
+end
+
+CatchingTab.MouseButton1Click:Connect(function()
+    CatchingFrame.Visible = true
+    DefensiveFrame.Visible = false
+    CatchingTab.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    DefensiveTab.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+end)
+
+DefensiveTab.MouseButton1Click:Connect(function()
+    CatchingFrame.Visible = false
+    DefensiveFrame.Visible = true
+    CatchingTab.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+    DefensiveTab.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+end)
+
+MagsToggle.MouseButton1Click:Connect(function()
+    isMagsEnabled = not isMagsEnabled
+    toggleAnimation(MagsCircle, isMagsEnabled)
+    ConsoleText.Text = ConsoleText.Text .. "\n> " .. (isMagsEnabled and "Mags enabled" or "Mags disabled")
+    if isMagsEnabled then
+        task.spawn(enableMags)
+    end
+end)
+
+VisualToggle.MouseButton1Click:Connect(function()
+    isVisualEnabled = not isVisualEnabled
+    toggleAnimation(VisualCircle, isVisualEnabled)
+    hitbox.Transparency = isVisualEnabled and 0.5 or 1
+    ConsoleText.Text = ConsoleText.Text .. "\n> " .. (isVisualEnabled and "Visual enabled" or "Visual disabled")
+end)
+
+AutoTackleToggle.MouseButton1Click:Connect(function()
+    isAutoTackleEnabled = not isAutoTackleEnabled
+    toggleAnimation(AutoTackleCircle, isAutoTackleEnabled)
+    if isAutoTackleEnabled then
+        task.spawn(enableAutoTackle)
+    end
+end)
+
+local isDragging = false
+SliderButton.MouseButton1Down:Connect(function()
+    isDragging = true
+end)
+
+game:GetService("UserInputService").InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        isDragging = false
+    end
+end)
+
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement and isDragging then
+        local mousePos = game:GetService("UserInputService"):GetMouseLocation()
+        local sliderPos = SliderButton.AbsolutePosition
+        local sliderSize = SliderButton.AbsoluteSize
+        
+        local relativeX = math.clamp((mousePos.X - sliderPos.X) / sliderSize.X, 0, 1)
+        local size = math.round(relativeX * 18) + 2
+        
+        hitbox.Size = Vector3.new(size, size, size)
+        SliderLabel.Text = "> Size: " .. size
+        ConsoleText.Text = ConsoleText.Text .. "\n> Size set to " .. size
+    end
+end)
+
+local function updateHitboxPosition()
+    if football and football.Parent then
+        local character = player.Character
+        if character and character:FindFirstChild("HumanoidRootPart") then
+            hitbox.CFrame = character.HumanoidRootPart.CFrame * CFrame.new(0, 0, -3)
+        end
+    else
+        football = findFootball()
+    end
+end
+
+RunService.Heartbeat:Connect(function()
+    updateHitboxPosition()
+end)
+
+workspace.ChildAdded:Connect(function(child)
+    if child.Name == "Football" then
+        football = child
+    end
+end)
+
+local function updateConsoleText()
+    local lines = string.split(ConsoleText.Text, "\n")
+    if #lines > 8 then
+        table.remove(lines, 1)
+        ConsoleText.Text = table.concat(lines, "\n")
+    end
+end
+
+local VersionLabel = Instance.new("TextLabel")
+VersionLabel.Size = UDim2.new(0, 100, 0, 20)
+VersionLabel.Position = UDim2.new(1, -110, 1, -25)
+VersionLabel.BackgroundTransparency = 1
+VersionLabel.Text = "v1.0.0"
+VersionLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+VersionLabel.Font = Enum.Font.Code
+VersionLabel.TextSize = 14
+VersionLabel.Parent = MainFrame
+
+local function addConsoleText(text)
+    ConsoleText.Text = ConsoleText.Text .. "\n> " .. text
+    updateConsoleText()
+end
+
+local function updateFootballMags()
+    while true do
+        if isMagsEnabled and football and football.Parent then
+            local character = player.Character
+            if character and character:FindFirstChild("HumanoidRootPart") then
+                local distance = (character.HumanoidRootPart.Position - football.Position).Magnitude
+                if distance <= hitbox.Size.X then
+                    football.CFrame = hitbox.CFrame
+                end
+            end
+        end
+        task.wait()
+    end
+end
+
+task.spawn(updateFootballMags)
+addConsoleText("System ready")
+
+
